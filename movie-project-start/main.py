@@ -43,8 +43,19 @@ def home():
     cursor = db.cursor()
     table = cursor.execute("SELECT id, title, description, rating, ranking, review, img_url, year FROM Movies")
     items = table.fetchall()
+
+    ordered_items = []
+    rankings = [item[4] for item in items]
+    rankings = sorted(rankings, reverse=True)
+
+    for ranking in rankings:
+        for item in items:
+            if item[4] == ranking:
+                ordered_items.append(item)
+        
+
     db.close()    
-    return render_template("index.html", items=items)
+    return render_template("index.html", items=ordered_items)
 
 
 @app.route("/edit<id>", methods=["GET", "POST"])
